@@ -9,7 +9,7 @@ export default class Move {
     this.b = b
     this.ruleStates = {}
 
-    this.result = new Digit()
+    this.result = new Digit(null, this)
     Move.runPerform(this)
 
     a.subscribe(this.listenEither.bind(this))
@@ -24,6 +24,8 @@ export default class Move {
     if (!move.canPerform()) return
     move.result.value = move.perform()
   }
+
+  static getSymbol() { return 'DEFAULT' }
 
   canPerform() {
     const {a, b} = this

@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+
 import * as gameUtils from './game/util'
-import Digit from './game/digit'
-import Add from './game/moves/add'
+import GameDigit from './game/digit';
+import AddMove from './game/moves/add'
+
+import Digit from './components/Digit'
+
 import './App.css';
 
 const DEBOUNCE_PERIOD = 100
@@ -13,17 +17,18 @@ class App extends Component {
 
     const digits = []
     for (var i = 0; i < 2; i++) {
-      digits.push(new Digit(gameUtils.randomInt(), i, null))
+      digits.push(new GameDigit(gameUtils.randomInt(), i, null))
     }
 
     this.state = {
       moves: [],
+      currentMove: null,
       digits,
     }
   }
 
   addFirstTwoDigits = () => {
-    const nextMove = new Add(this.state.digits[0], this.state.digits[1])
+    const nextMove = new AddMove(this.state.digits[0], this.state.digits[1])
 
     nextMove.result.subscribe(() => this.debounceRerender()) // TODO: LOL THIS IS FUCKED UP AND BAD BUDDYYYY
 
@@ -52,6 +57,30 @@ class App extends Component {
     clearTimeout(this.cancelRerender)
   }
 
+  handleInitMove = digit => Move => () => {
+    console.log('digit', digit)
+    console.log('Move', Move)
+    console.log('INITIALIZING A MOVE', digit.id);
+    this.setState({
+      currentMove: { a: digit, Move }
+    })
+  }
+
+  handleCompleteMove = digit => () => {
+    console.log('COMPLETING A MOVE', digit.id);
+    const {a, Move} = this.state.currentMove
+    const b = digit
+
+    const nextMove = new Move(a, b)
+    nextMove.result.subscribe(() => this.debounceRerender()) // TODO: LOL THIS IS FUCKED UP AND BAD BUDDYYYY
+
+    this.setState(({moves, digits}) => ({
+      moves: moves.concat(nextMove),
+      digits: digits.concat(nextMove.result),
+      currentMove: null
+    }))
+  }
+
   render() {
     const {digits} = this.state
     return (
@@ -65,6 +94,22 @@ class App extends Component {
             )}
           </div>
         </header>
+        <div
+          className={
+            'MathSpace' +
+            (this.state.currentMove && 'move-initialized')
+          }
+        >
+          {this.state.digits.map((digit, i) =>
+            <Digit
+              key={i}
+              digit={digit}
+              shouldInitMove={!this.state.currentMove}
+              onInitMove={this.handleInitMove(digit)}
+              onCompleteMove={this.handleCompleteMove(digit)}
+            />
+          )}
+        </div>
       </div>
     );
   }

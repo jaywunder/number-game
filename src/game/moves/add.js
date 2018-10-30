@@ -2,6 +2,8 @@ import Move from '../move'
 
 export default class Add extends Move {
 
+  static getSymbol() { return '+' }
+
   getRules() {
     return []
   }

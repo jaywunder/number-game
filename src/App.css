@@ -1,15 +1,9 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
 }
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,15 +12,46 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.MathSpace {
+  position: relative;
+  min-height: 90vh;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Digit {
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  margin-left: 7em;
+  margin-top: 7em;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: .2em;
+  background-color: grey;
+  cursor: default;
+}
+
+.move-initialized .Digit {
+  cursor: pointer;
+}
+
+.Digit > * {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  top: 50%;
+  left: 50%;
+  margin: -.5em;
+}
+
+.Digit > *::selection {
+  background: none;
+}
+
+.Move {
+  transition: transform .5s;
+  border: solid thin pink;
+  transform-origin: center center;
+  display: inline-block;
+  cursor: pointer;
 }
